@@ -3,8 +3,11 @@ Auxiliary functions
 
 JCA
 """
-
+import open3d as o3d
 import numpy as np
+import os
+import tqdm
+
 
 def volume_to_pointcloud(volume, voxel_size=1.0):
     """
@@ -23,3 +26,22 @@ def volume_to_pointcloud(volume, voxel_size=1.0):
     points = coords.astype(np.float32) * voxel_size      # scaled 3D points
     values = volume[tuple(coords.T)]                     # extract values at those coords
     return points, values
+
+
+
+def save_as_pointcloud(volumes, filepath, format='ply', voxel_size=1.0, name = 'points'):
+    """Save point cloud. Formats: .ply """
+    print(' - Saving Point Cloud...')
+    for it in tqdm.tqdm(enumerate(volumes), total=len(volumes)):
+        i, v = it
+        points, values = volume_to_pointcloud(v, voxel_size)
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(points)
+
+        filename = os.path.join(filepath, f'{name}-{i}.{format}')
+
+        o3d.io.write_point_cloud(filename, pcd)
+
+
+
+

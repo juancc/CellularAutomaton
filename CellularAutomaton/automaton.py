@@ -6,7 +6,7 @@ JCA
 
 import numpy as np
 from scipy.ndimage import generic_filter
-
+import tqdm
 
 def initialize_space(shape, prob=0.5, seed=None):
     """
@@ -69,9 +69,10 @@ def evolve_volume(initial_volume, rule_fn, steps=10):
     Returns:
         List[ndarray]: list of volumes, one per step (including initial).
     """
+    print(' - Evolving...')
     volumes = [initial_volume.copy()]
     current = initial_volume.copy()
-    for _ in range(steps):
+    for _ in tqdm.tqdm(range(steps), total=steps):
         current = apply_rule(current, rule_fn)
         volumes.append(current.copy())
     return volumes

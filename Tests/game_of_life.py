@@ -24,22 +24,21 @@ JCA
 """
 
 # Visualization
-from CellularAutomaton.visualization import visualize_volume
+import CellularAutomaton.visualization as viz
 from CellularAutomaton.codebook import life3d_rule
 
 # Automaton
 import CellularAutomaton.automaton as automaton
+import CellularAutomaton.auxfun as aux
 
 
-
+print('Game of Life 3D')
 
 # 3D shape
-shape = (10, 10, 10)
-initial_volume = automaton.initialize_space(shape, prob=0.2)
+shape = (200, 200, 200)
+initial_volume = automaton.initialize_space(shape, prob=0.1)
 
 volumes = automaton.evolve_volume(initial_volume, life3d_rule, steps=10)
 
-# print(volumes)
-
-for v in volumes:
-    visualize_volume(v, mode='voxel')
+aux.save_as_pointcloud(volumes, '/Users/jarbel16/Downloads/automaton/' )
+viz.render_as_pointcloud(volumes, '/Users/jarbel16/Downloads/automaton/')
