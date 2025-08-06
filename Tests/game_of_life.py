@@ -39,5 +39,7 @@ initial_volume = automaton.initialize_space(shape, prob=0.2)
 
 volumes = automaton.evolve_volume(initial_volume, life3d_rule, steps=10)
 
+# print(volumes)
+
 for v in volumes:
     visualize_volume(v, mode='voxel')
