@@ -16,6 +16,7 @@ def initialize_space(shape, prob=0.5, seed=None):
     return (rng.random(shape) < prob).astype(int)
 
 
+
 def codebook_rule_fn(codebook, not_found='random'):
     """
     Returns a function that applies the codebook rule to a neighborhood vector.
