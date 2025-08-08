@@ -6,6 +6,7 @@ JCA
 
 # Visualization
 import CellularAutomaton.visualization as viz
+import CellularAutomaton.initializers as init
 from CellularAutomaton.codebook import generate_random_codebook
 
 # Automaton
@@ -16,7 +17,11 @@ import CellularAutomaton.automaton as automaton
 
 # 3D shape
 shape = (100, 100, 100)
-initial_volume = automaton.initialize_space(shape, prob=0.1)
+initial_volume = init.initialize_space(shape, prob=0.1)
+
+# initial_volume = init.initialize_volume_clusters(shape, n_clusters=5, cluster_radius=3, density=0.5)
+# viz.visualize_volume(initial_volume, mode='voxel')
+
 
 print(shape[0]*shape[1]*shape[2]*0.1)
 print(initial_volume.sum())

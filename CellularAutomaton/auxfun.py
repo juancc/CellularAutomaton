@@ -29,18 +29,15 @@ def volume_to_pointcloud(volume, voxel_size=1.0):
 
 
 
-def save_as_pointcloud(volumes, filepath, format='ply', voxel_size=1.0, name = 'points'):
+def save_as_pointcloud(volume, filepath, timestep, format='ply', voxel_size=1.0, name = 'points'):
     """Save point cloud. Formats: .ply """
-    print(' - Saving Point Cloud...')
-    for it in tqdm.tqdm(enumerate(volumes), total=len(volumes)):
-        i, v = it
-        points, values = volume_to_pointcloud(v, voxel_size)
-        pcd = o3d.geometry.PointCloud()
-        pcd.points = o3d.utility.Vector3dVector(points)
+    points, values = volume_to_pointcloud(volume, voxel_size)
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(points)
 
-        filename = os.path.join(filepath, f'{name}-{i}.{format}')
+    filename = os.path.join(filepath, f'{name}-{timestep}.{format}')
 
-        o3d.io.write_point_cloud(filename, pcd)
+    o3d.io.write_point_cloud(filename, pcd)
 
 
 

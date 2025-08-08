@@ -3,18 +3,13 @@ Functions for performing sliding windows over a 3D space
 
 JCA
 """
-
+import os
 import numpy as np
 from scipy.ndimage import generic_filter
 import tqdm
 
-def initialize_space(shape, prob=0.5, seed=None):
-    """
-    Randomly initialize a binary 3D grid with a threshold probability.
-    """
-    rng = np.random.default_rng(seed)
-    return (rng.random(shape) < prob).astype(int)
-
+import CellularAutomaton.auxfun as aux
+import CellularAutomaton.visualization as viz
 
 
 def codebook_rule_fn(codebook, not_found='random'):
@@ -44,7 +39,7 @@ def codebook_rule_fn(codebook, not_found='random'):
     return rule
 
 
-def apply_rule(volume, rule_fn):
+def apply_rule(volume, rule_fn,  window_size=3):
     """
     Applies one step of the cellular automaton using a general rule function.
 
@@ -55,10 +50,10 @@ def apply_rule(volume, rule_fn):
     Returns:
         new_volume (ndarray): updated volume.
     """
-    return generic_filter(volume, rule_fn, size=3, mode='constant', cval=0)
+    return generic_filter(volume, rule_fn, size=window_size, mode='constant', cval=0)
 
 
-def evolve_volume(initial_volume, rule_fn, steps=10):
+def evolve_volume(initial_volume, rule_fn, steps=10, savepath=None):
     """
     Runs cellular automaton over multiple time steps.
 
@@ -71,9 +66,19 @@ def evolve_volume(initial_volume, rule_fn, steps=10):
         List[ndarray]: list of volumes, one per step (including initial).
     """
     print(' - Evolving...')
+
+    if savepath:
+        os.makedirs(savepath, exist_ok=True)
+
+
     volumes = [initial_volume.copy()]
     current = initial_volume.copy()
-    for _ in tqdm.tqdm(range(steps), total=steps):
+    for timestep in tqdm.tqdm(range(steps), total=steps):
         current = apply_rule(current, rule_fn)
+
+        if savepath:
+            aux.save_as_pointcloud(current, savepath, timestep)
+            viz.render_as_pointcloud(current, savepath, timestep)
+
         volumes.append(current.copy())
     return volumes

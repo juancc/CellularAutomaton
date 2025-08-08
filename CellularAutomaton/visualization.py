@@ -178,32 +178,24 @@ def visualize_volume(volume, mode='voxel', voxel_size=1.0, color=(0.6, 0.6, 0.6)
 
 
 
-def render_as_pointcloud(volumes, path, name='render', voxel_size=1.0, figsize=(8, 8), colorbar=False):
-    print(' - Rendering')
+def render_as_pointcloud(volume, path, timestep, name='render', voxel_size=1.0, figsize=(8, 8), colorbar=False):
 
-    for it in tqdm(enumerate(volumes), total=len(volumes)):
-        t, volume = it
+    points, values = volume_to_pointcloud(volume, voxel_size)
 
-        points, values = volume_to_pointcloud(volume, voxel_size)
+    fig = plt.figure(figsize=figsize)
+    ax = fig.add_subplot(111, projection='3d')
+    
+    sc = ax.scatter(points[:, 0], points[:, 1], points[:, 2],
+                    c=values, cmap='viridis', s=2, alpha=0.7)
+    
+    if colorbar: fig.colorbar(sc, ax=ax, label='Voxel Value')
+    
+    ax.set_axis_off()
 
-        fig = plt.figure(figsize=figsize)
-        ax = fig.add_subplot(111, projection='3d')
-        
-        sc = ax.scatter(points[:, 0], points[:, 1], points[:, 2],
-                        c=values, cmap='viridis', s=2, alpha=0.7)
-
-        # ax.set_xlabel("X")
-        # ax.set_ylabel("Y")
-        # ax.set_zlabel("Z")
-        # ax.set_title("Voxel Scatter Plot")
-        if colorbar: fig.colorbar(sc, ax=ax, label='Voxel Value')
-        
-        ax.set_axis_off()
-
-        plt.tight_layout()
-        
-        filename = os.path.join(path, f'{name}-{t}.png')
-        plt.savefig(filename, dpi=300)
-        plt.close(fig)
+    plt.tight_layout()
+    
+    filename = os.path.join(path, f'{name}-{timestep}.png')
+    plt.savefig(filename, dpi=300)
+    plt.close(fig)
 
 

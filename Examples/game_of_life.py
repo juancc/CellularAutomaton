@@ -22,23 +22,22 @@ Initial running test
 
 JCA
 """
-
-# Visualization
 import CellularAutomaton.visualization as viz
 from CellularAutomaton.codebook import life3d_rule
-
-# Automaton
 import CellularAutomaton.automaton as automaton
 import CellularAutomaton.auxfun as aux
+import CellularAutomaton.initializers as init
 
 
 print('Game of Life 3D')
 
+STEPS = 100
+SAVEPATH = '/Users/jarbel16/Downloads/game_of_life/' 
 # 3D shape
 shape = (200, 200, 200)
-initial_volume = automaton.initialize_space(shape, prob=0.1)
+# initial_volume = init.initialize_space(shape, prob=0.1)
+initial_volume = init.initialize_volume_clusters(shape, n_clusters=5, cluster_radius=5, density=0.5)
 
-volumes = automaton.evolve_volume(initial_volume, life3d_rule, steps=10)
 
-aux.save_as_pointcloud(volumes, '/Users/jarbel16/Downloads/automaton/' )
-viz.render_as_pointcloud(volumes, '/Users/jarbel16/Downloads/automaton/')
+volumes = automaton.evolve_volume(initial_volume, life3d_rule, steps=STEPS, savepath=SAVEPATH)
+
