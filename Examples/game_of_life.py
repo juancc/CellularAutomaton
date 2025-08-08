@@ -32,7 +32,7 @@ import CellularAutomaton.initializers as init
 print('Game of Life 3D')
 
 STEPS = 50
-SAVEPATH = '/Users/jarbel16/Downloads/game_of_life/' 
+SAVEPATH = '/Users/juanca/Downloads/game_of_life/' 
 # 3D shape
 shape = (50, 50, 50)
 # initial_volume = init.initialize_space(shape, prob=0.1)
