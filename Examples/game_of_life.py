@@ -31,13 +31,16 @@ import CellularAutomaton.initializers as init
 
 print('Game of Life 3D')
 
-STEPS = 100
+STEPS = 50
 SAVEPATH = '/Users/jarbel16/Downloads/game_of_life/' 
 # 3D shape
-shape = (200, 200, 200)
+shape = (50, 50, 50)
 # initial_volume = init.initialize_space(shape, prob=0.1)
-initial_volume = init.initialize_volume_clusters(shape, n_clusters=5, cluster_radius=5, density=0.5)
+initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=5, cluster_radius=5, density=0.5)
 
+# viz.render_as_pointcloud(initial_volume, SAVEPATH, 0, cmap_dict)
 
-volumes = automaton.evolve_volume(initial_volume, life3d_rule, steps=STEPS, savepath=SAVEPATH)
+# aux.save_as_pointcloud(initial_volume, SAVEPATH, 0, cmap_dict=cmap_dict)
+
+volumes = automaton.evolve_volume(initial_volume, life3d_rule, steps=STEPS, savepath=SAVEPATH, cmap_dict=cmap_dict)
 

@@ -91,111 +91,64 @@ def visualize_volume(volume, mode='voxel', voxel_size=1.0, color=(0.6, 0.6, 0.6)
     o3d.visualization.draw_geometries(to_draw)
 
 
-# def visualize_evolution_voxels_interactive(volumes, cmap='viridis'):
-#     """
-#     Interactive visualization of 3D cellular automaton using ipywidgets + matplotlib.voxels.
-
-#     Parameters:
-#         volumes (List[ndarray]): List of 3D volumes (timesteps).
-#         cmap (str): Matplotlib colormap name.
-#     """
-#     from ipywidgets import interact, IntSlider
-
-#     max_step = len(volumes) - 1
-#     shape = volumes[0].shape
-
-#     def plot_step(step):
-#         volume = volumes[step]
-#         fig = plt.figure(figsize=(6, 6))
-#         ax = fig.add_subplot(111, projection='3d')
-#         ax.set_title(f"Step {step}")
-#         ax.set_xlim(0, shape[0])
-#         ax.set_ylim(0, shape[1])
-#         ax.set_zlim(0, shape[2])
-#         ax.set_box_aspect(shape)
-#         ax.set_xticks([])
-#         ax.set_yticks([])
-#         ax.set_zticks([])
-
-#         filled = volume > 0
-#         if np.any(filled):
-#             facecolors = np.empty(filled.shape + (4,), dtype=np.float32)
-#             norm_vals = volume / volume.max() if volume.max() > 0 else volume
-#             colors = cm.get_cmap(cmap)(norm_vals)
-#             facecolors[filled] = colors[filled]
-#             edgecolors = np.full_like(facecolors, (0, 0, 0, 1))
-#             edgecolors[..., :3] = 0  # black borders
-#             ax.voxels(filled, facecolors=facecolors, edgecolors=edgecolors)
-
-#         plt.show()
-
-#     interact(plot_step, step=IntSlider(min=0, max=max_step, step=1, value=0))
-
-# def render_evolution_voxels(volumes, path, name='render', cmap='viridis'):
-#     """
-#     Visualize evolution of a 3D cellular automaton using matplotlib.voxels.
-
-#     Parameters:
-#         volumes (List[ndarray]): List of 3D volumes (timesteps).
-#         delay (float): Delay between frames in seconds.
-#         cmap (str): Matplotlib colormap name for multi-state visualization.
-#     """
-
-
-#     print(' - Rendering')
-
-
-#     for it in tqdm(enumerate(volumes), total=len(volumes)):
-#         t, volume = it
-
-#         fig = plt.figure(figsize=(6, 6))
-#         ax = fig.add_subplot(111, projection='3d')
-        
-#         ax.clear()
-#         ax.set_title(f"Step {t}")
-#         ax.set_xlim(0, volume.shape[0])
-#         ax.set_ylim(0, volume.shape[1])
-#         ax.set_zlim(0, volume.shape[2])
-#         ax.set_box_aspect(volume.shape)
-#         ax.set_xticks([])
-#         ax.set_yticks([])
-#         ax.set_zticks([])
-
-#         filled = volume > 0
-#         if np.any(filled):
-#             facecolors = np.empty(filled.shape + (4,), dtype=np.float32)
-#             norm_vals = volume / volume.max() if volume.max() > 0 else volume
-#             colors = plt.cm.get_cmap(cmap)(norm_vals)
-#             facecolors[filled] = colors[filled]
-#             edgecolors = np.full_like(facecolors, (0, 0, 0, 1))
-#             edgecolors[..., :3] = 0  # black borders
-#             ax.voxels(filled, facecolors=facecolors, edgecolors=edgecolors)
-
-#             filepath = os.path.join(path, f'{name}-{t}.png')
-
-#             plt.savefig(filepath )
-#             plt.close(fig)
 
 
 
-def render_as_pointcloud(volume, path, timestep, name='render', voxel_size=1.0, figsize=(8, 8), colorbar=False):
+# def render_as_pointcloud(volume, path, timestep, name='render', voxel_size=1.0, figsize=(8, 8), colorbar=False):
 
+#     points, values = volume_to_pointcloud(volume, voxel_size)
+
+#     fig = plt.figure(figsize=figsize)
+#     ax = fig.add_subplot(111, projection='3d')
+    
+#     sc = ax.scatter(points[:, 0], points[:, 1], points[:, 2],
+#                     c=values, cmap='viridis', s=2, alpha=0.7)
+    
+#     if colorbar: fig.colorbar(sc, ax=ax, label='Voxel Value')
+    
+#     ax.set_axis_off()
+
+#     plt.tight_layout()
+    
+#     filename = os.path.join(path, f'{name}-{timestep}.png')
+#     plt.savefig(filename, dpi=300)
+#     plt.close(fig)
+
+
+def render_as_pointcloud(volume, path, timestep, cmap_dict=None,
+                         name='render', voxel_size=1.0, figsize=(8, 8), colorbar=False):
+    """
+    Render a 3D volume as a point cloud with optional fixed colors per ID.
+
+    Parameters:
+        volume (ndarray): 3D NumPy array of IDs (0 = empty).
+        path (str): Folder to save images.
+        timestep (int): Current simulation step.
+        cmap_dict (dict): Mapping from ID -> RGB tuple in [0, 1].
+        name (str): Base filename for saving.
+        voxel_size (float): Scaling for voxel spacing.
+        figsize (tuple): Matplotlib figure size.
+        colorbar (bool): Show colorbar if True (ignored if cmap_dict given).
+    """
     points, values = volume_to_pointcloud(volume, voxel_size)
 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(111, projection='3d')
-    
-    sc = ax.scatter(points[:, 0], points[:, 1], points[:, 2],
-                    c=values, cmap='viridis', s=2, alpha=0.7)
-    
-    if colorbar: fig.colorbar(sc, ax=ax, label='Voxel Value')
-    
-    ax.set_axis_off()
 
+    if cmap_dict is not None:
+        # Map IDs to RGB colors
+        colors = np.array([cmap_dict.get(v, (0.5, 0.5, 0.5)) for v in values])
+        sc = ax.scatter(points[:, 0], points[:, 1], points[:, 2],
+                        c=colors, s=2, alpha=0.7)
+    else:
+        sc = ax.scatter(points[:, 0], points[:, 1], points[:, 2],
+                        c=values, cmap='viridis', s=2, alpha=0.7)
+        if colorbar:
+            fig.colorbar(sc, ax=ax, label='Voxel Value')
+
+    ax.set_axis_off()
     plt.tight_layout()
-    
+
     filename = os.path.join(path, f'{name}-{timestep}.png')
     plt.savefig(filename, dpi=300)
     plt.close(fig)
-
-
