@@ -23,7 +23,7 @@ Initial running test
 JCA
 """
 import CellularAutomaton.visualization as viz
-from CellularAutomaton.codebook import life3d_rule
+from CellularAutomaton.codebook import life3d_rule, life3d_rule_generalized
 import CellularAutomaton.automaton as automaton
 import CellularAutomaton.auxfun as aux
 import CellularAutomaton.initializers as init
@@ -32,15 +32,25 @@ import CellularAutomaton.initializers as init
 print('Game of Life 3D')
 
 STEPS = 50
-SAVEPATH = '/Users/juanca/Downloads/game_of_life/' 
+SAVEPATH = '/Users/juanca/Downloads/game_of_life-5766/' 
 # 3D shape
 shape = (50, 50, 50)
-# initial_volume = init.initialize_space(shape, prob=0.1)
+
+### Random
+# initial_volume, cmap_dict = init.initialize_space(shape, prob=0.1)
+
+### Clusters
 initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=5, cluster_radius=5, density=0.5)
 
-# viz.render_as_pointcloud(initial_volume, SAVEPATH, 0, cmap_dict)
 
-# aux.save_as_pointcloud(initial_volume, SAVEPATH, 0, cmap_dict=cmap_dict)
+## Original Conway
+# rule_fn = life3d_rule_generalized( birth_set={3}, survival_set={2, 3})
 
-volumes = automaton.evolve_volume(initial_volume, life3d_rule, steps=STEPS, savepath=SAVEPATH, cmap_dict=cmap_dict)
+## Original 4555
+# rule_fn = life3d_rule_generalized( birth_set={4}, survival_set={5})
+
+## Original 5766
+rule_fn = life3d_rule_generalized( birth_set={5}, survival_set={6})
+
+volumes = automaton.evolve_volume(initial_volume, rule_fn, steps=STEPS, savepath=SAVEPATH, cmap_dict=cmap_dict)
 

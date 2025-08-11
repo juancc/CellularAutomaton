@@ -5,12 +5,15 @@ JCA
 """
 import numpy as np
 
-def initialize_space(shape, prob=0.5, seed=None):
+def initialize_space(shape, prob=0.5, seed=None, col= (0.8, 0.8,0.8)):
     """
     Randomly initialize a binary 3D grid with a threshold probability.
     """
     rng = np.random.default_rng(seed)
-    return (rng.random(shape) < prob).astype(int)
+    id_to_color = {1: col}
+
+
+    return (rng.random(shape) < prob).astype(int), id_to_color
 
 
 
