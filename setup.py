@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='CellularAutomaton',
-    version='0.0.1',
+    version='0.0.2',
     description='3D Cellular Automaton library for generating product designs',
     url='https://github.com/juancc/cellularautomaton',
     author='Juan Carlos Arbelaez',
