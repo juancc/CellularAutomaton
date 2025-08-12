@@ -109,9 +109,15 @@ def evolve_volume(initial_volume, rule_fn, steps=10, savepath=None, cmap_dict=No
         cmap_dict = {int(uid): np.random.rand(3) for uid in unique_ids}
         cmap_dict[0] = (0, 0, 0)  # empty = black
 
+    if savepath:
+        # render initial
+        aux.save_as_pointcloud(initial_volume, savepath, 0, voxel_size=voxel_size, cmap_dict=cmap_dict)
+        viz.render_as_pointcloud(initial_volume, savepath, 0, voxel_size=voxel_size, cmap_dict=cmap_dict)
+
     for timestep in tqdm.tqdm(range(steps), total=steps):
         # Rule function now returns both the new volume and updated cmap_dict
         # current, cmap_dict = rule_fn(current)
+        timestep += 1
         current = apply_rule(current, rule_fn)
 
         if savepath:

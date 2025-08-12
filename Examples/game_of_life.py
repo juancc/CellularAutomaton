@@ -29,10 +29,10 @@ import CellularAutomaton.auxfun as aux
 import CellularAutomaton.initializers as init
 
 
-print('Game of Life 3D')
+print('** Game of Life 3D **')
 
 STEPS = 50
-SAVEPATH = '/Users/juanca/Downloads/game_of_life-5766/' 
+SAVEPATH = '/Users/jarbel16/Downloads/' 
 # 3D shape
 shape = (50, 50, 50)
 
@@ -40,17 +40,34 @@ shape = (50, 50, 50)
 # initial_volume, cmap_dict = init.initialize_space(shape, prob=0.1)
 
 ### Clusters
-initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=5, cluster_radius=5, density=0.5)
+# initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=6, cluster_radius=5, density=0.5)
+
+### CLusters with random noise
+# initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=5, 
+#                                                                        cluster_radius=5, density=0.5,
+#                                                                        noise_density=0.01)
+
+### CLusters with random noise and environment
+initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=5, 
+                                                                       cluster_radius=5, 
+                                                                       density=0.5,
+                                                                       noise_density=0,
+                                                                       env_type = None, #'structured',
+                                                                       env_density = 0.1,
+                                                                       )
 
 
 ## Original Conway
+# SAVEPATH = f'{SAVEPATH}/game_of_life-original-env'
+# rule_fn = life3d_rule_generalized( birth_set={3}, survival_set={2, 3})
 # rule_fn = life3d_rule_generalized( birth_set={3}, survival_set={2, 3})
 
-## Original 4555
-# rule_fn = life3d_rule_generalized( birth_set={4}, survival_set={5})
+##  4555
+SAVEPATH = f'{SAVEPATH}/game_of_life-4555-env2'
+rule_fn = life3d_rule_generalized( birth_set={4}, survival_set={5})
 
 ## Original 5766
-rule_fn = life3d_rule_generalized( birth_set={5}, survival_set={6})
+# rule_fn = life3d_rule_generalized( birth_set={5}, survival_set={6})
 
 volumes = automaton.evolve_volume(initial_volume, rule_fn, steps=STEPS, savepath=SAVEPATH, cmap_dict=cmap_dict)
 

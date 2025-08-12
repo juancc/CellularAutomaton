@@ -11,8 +11,8 @@ import tqdm
 
 def volume_to_pointcloud(volume, voxel_size=1.0):
     """
-    Convert a binary or multi-state 3D volume into a point cloud of coordinates
-    where values are non-zero.
+    Convert a multi-state 3D volume (including environment cells with negative IDs)
+    into a point cloud of coordinates where values are non-zero.
 
     Parameters:
         volume (ndarray): 3D NumPy array.
@@ -22,9 +22,10 @@ def volume_to_pointcloud(volume, voxel_size=1.0):
         points (ndarray): N×3 array of (x, y, z) coordinates.
         values (ndarray): N array of corresponding values from the volume.
     """
-    coords = np.argwhere(volume > 0)                     # N × 3
-    points = coords.astype(np.float32) * voxel_size      # scaled 3D points
-    values = volume[tuple(coords.T)]                     # extract values at those coords
+    # Include any non-zero value (positive or negative)
+    coords = np.argwhere(volume != 0)                     # N × 3
+    points = coords.astype(np.float32) * voxel_size       # scaled 3D points
+    values = volume[tuple(coords.T)]                      # extract values at those coords
     return points, values
 
 
