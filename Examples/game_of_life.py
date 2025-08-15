@@ -31,10 +31,10 @@ import CellularAutomaton.initializers as init
 
 print('** Game of Life 3D **')
 
-STEPS = 100
+STEPS = 200
 SAVEPATH = '/Users/jarbel16/Downloads/' 
 # 3D shape
-shape = (100, 100, 100)
+shape = (50, 50, 50)
 
 ### CLusters with random noise and environment
 initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=7, 
