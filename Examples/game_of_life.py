@@ -31,31 +31,19 @@ import CellularAutomaton.initializers as init
 
 print('** Game of Life 3D **')
 
-STEPS = 50
+STEPS = 100
 SAVEPATH = '/Users/jarbel16/Downloads/' 
 # 3D shape
-shape = (50, 50, 50)
-
-### Random
-# initial_volume, cmap_dict = init.initialize_space(shape, prob=0.1)
-
-### Clusters
-# initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=6, cluster_radius=5, density=0.5)
-
-### CLusters with random noise
-# initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=5, 
-#                                                                        cluster_radius=5, density=0.5,
-#                                                                        noise_density=0.01)
+shape = (100, 100, 100)
 
 ### CLusters with random noise and environment
-initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=5, 
+initial_volume, cmap_dict = init.initialize_volume_clusters(shape, n_clusters=7, 
                                                                        cluster_radius=5, 
                                                                        density=0.5,
-                                                                       noise_density=0,
+                                                                       noise_density=0.01,
                                                                        env_type = None, #'structured',
                                                                        env_density = 0.1,
                                                                        )
-
 
 ## Original Conway
 # SAVEPATH = f'{SAVEPATH}/game_of_life-original-env'
