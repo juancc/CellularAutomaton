@@ -9,7 +9,7 @@ import os
 import tqdm
 
 
-def volume_to_pointcloud(volume, voxel_size=1.0):
+def volume_to_pointcloud(volume, voxel_size=1.0, save_env=True):
     """
     Convert a multi-state 3D volume (including environment cells with negative IDs)
     into a point cloud of coordinates where values are non-zero.
@@ -23,7 +23,12 @@ def volume_to_pointcloud(volume, voxel_size=1.0):
         values (ndarray): N array of corresponding values from the volume.
     """
     # Include any non-zero value (positive or negative)
-    coords = np.argwhere(volume != 0)                     # N × 3
+    if save_env:
+        coords = np.argwhere(volume != 0)                     # N × 3
+    else:
+        # Environment cell value = -1
+        coords = np.argwhere(volume > 0)                     # N × 3
+
     points = coords.astype(np.float32) * voxel_size       # scaled 3D points
     values = volume[tuple(coords.T)]                      # extract values at those coords
     return points, values
@@ -40,7 +45,7 @@ def volume_to_pointcloud(volume, voxel_size=1.0):
 
 #     o3d.io.write_point_cloud(filename, pcd)
 
-def save_as_pointcloud(volume, filepath, timestep, format='ply', voxel_size=1.0, name='points', cmap_dict=None):
+def save_as_pointcloud(volume, filepath, timestep, format='ply', voxel_size=1.0, name='points', cmap_dict=None, save_env=True):
     """
     Save point cloud to file. Supports .ply with optional colors.
 
@@ -53,7 +58,7 @@ def save_as_pointcloud(volume, filepath, timestep, format='ply', voxel_size=1.0,
         name (str): Base filename.
         cmap_dict (dict): Mapping {state: (R, G, B)}, values in 0–255.
     """
-    points, values = volume_to_pointcloud(volume, voxel_size)
+    points, values = volume_to_pointcloud(volume, voxel_size, save_env=save_env)
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points)
 

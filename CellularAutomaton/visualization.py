@@ -116,7 +116,7 @@ def visualize_volume(volume, mode='voxel', voxel_size=1.0, color=(0.6, 0.6, 0.6)
 
 
 def render_as_pointcloud(volume, path, timestep, cmap_dict=None,
-                         name='render', voxel_size=1.0, figsize=(8, 8), colorbar=False):
+                         name='render', voxel_size=1.0, figsize=(8, 8), colorbar=False, save_env=True):
     """
     Render a 3D volume as a point cloud with optional fixed colors per ID.
 
@@ -130,7 +130,7 @@ def render_as_pointcloud(volume, path, timestep, cmap_dict=None,
         figsize (tuple): Matplotlib figure size.
         colorbar (bool): Show colorbar if True (ignored if cmap_dict given).
     """
-    points, values = volume_to_pointcloud(volume, voxel_size)
+    points, values = volume_to_pointcloud(volume, voxel_size, save_env=save_env)
 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(111, projection='3d')

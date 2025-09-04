@@ -84,7 +84,7 @@ def apply_rule(volume, rule_fn,  window_size=3):
 #     return volumes
 
 
-def evolve_volume(initial_volume, rule_fn, steps=10, savepath=None, cmap_dict=None, voxel_size=1.0):
+def evolve_volume(initial_volume, rule_fn, steps=10, savepath=None, cmap_dict=None, voxel_size=1.0, save_env=True):
     """
     Runs cellular automaton over multiple time steps.
 
@@ -111,8 +111,8 @@ def evolve_volume(initial_volume, rule_fn, steps=10, savepath=None, cmap_dict=No
 
     if savepath:
         # render initial
-        aux.save_as_pointcloud(initial_volume, savepath, 0, voxel_size=voxel_size, cmap_dict=cmap_dict)
-        viz.render_as_pointcloud(initial_volume, savepath, 0, voxel_size=voxel_size, cmap_dict=cmap_dict)
+        aux.save_as_pointcloud(initial_volume, savepath, 0, voxel_size=voxel_size, cmap_dict=cmap_dict, save_env=save_env)
+        viz.render_as_pointcloud(initial_volume, savepath, 0, voxel_size=voxel_size, cmap_dict=cmap_dict, save_env=save_env)
 
     for timestep in tqdm.tqdm(range(steps), total=steps):
         # Rule function now returns both the new volume and updated cmap_dict
@@ -121,8 +121,8 @@ def evolve_volume(initial_volume, rule_fn, steps=10, savepath=None, cmap_dict=No
         current = apply_rule(current, rule_fn)
 
         if savepath:
-            aux.save_as_pointcloud(current, savepath, timestep, voxel_size=voxel_size, cmap_dict=cmap_dict)
-            viz.render_as_pointcloud(current, savepath, timestep, voxel_size=voxel_size, cmap_dict=cmap_dict)
+            aux.save_as_pointcloud(current, savepath, timestep, voxel_size=voxel_size, cmap_dict=cmap_dict, save_env=save_env)
+            viz.render_as_pointcloud(current, savepath, timestep, voxel_size=voxel_size, cmap_dict=cmap_dict, save_env=save_env)
 
         volumes.append(current.copy())
 
