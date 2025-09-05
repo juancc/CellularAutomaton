@@ -84,7 +84,8 @@ def apply_rule(volume, rule_fn,  window_size=3):
 #     return volumes
 
 
-def evolve_volume(initial_volume, rule_fn, steps=10, savepath=None, cmap_dict=None, voxel_size=1.0, save_env=True):
+def evolve_volume(initial_volume, rule_fn, steps=10, savepath=None, 
+                  cmap_dict=None, voxel_size=1.0, save_env=True, save_steps=1):
     """
     Runs cellular automaton over multiple time steps.
 
@@ -120,7 +121,7 @@ def evolve_volume(initial_volume, rule_fn, steps=10, savepath=None, cmap_dict=No
         timestep += 1
         current = apply_rule(current, rule_fn)
 
-        if savepath:
+        if savepath and timestep % save_steps == 0:
             aux.save_as_pointcloud(current, savepath, timestep, voxel_size=voxel_size, cmap_dict=cmap_dict, save_env=save_env)
             viz.render_as_pointcloud(current, savepath, timestep, voxel_size=voxel_size, cmap_dict=cmap_dict, save_env=save_env)
 
