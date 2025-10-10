@@ -148,6 +148,9 @@ def initialize_volume_clusters_from_stl(
     size = max_corner - min_corner
     shape = np.ceil(size / resolution).astype(int) + 1
 
+    print(f' - Domain size: {shape}')
+
+
     # --- Build grid coordinates ---
     X, Y, Z = np.indices(shape)
     pts = np.stack([X, Y, Z], axis=-1).reshape(-1, 3)
