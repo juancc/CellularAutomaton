@@ -13,7 +13,8 @@ setup(
         'open3d',
         'numpy',
         'matplotlib',
-        'tqdm'
+        'tqdm',
+        'trimesh'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
