@@ -22,5 +22,5 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 3.11',
     ],
-    python_requires='==3.11.*',
+    python_requires=">=3.11,<3.13"
 )
