@@ -20,7 +20,7 @@ stl_path = '/Users/jarbel16/Library/Mobile Documents/com~apple~CloudDocs/Project
 
 
 SAVEPATH = '/Users/jarbel16/Downloads/' 
-SAVEPATH = f'{SAVEPATH}/res'
+SAVEPATH = f'{SAVEPATH}/res-automaton'
 
 STEPS = 200
 

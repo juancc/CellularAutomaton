@@ -152,14 +152,29 @@ def initialize_volume_clusters_from_stl(
 
 
     # --- Build grid coordinates ---
+    print(' - Building grid coordinates ')
     X, Y, Z = np.indices(shape)
     pts = np.stack([X, Y, Z], axis=-1).reshape(-1, 3)
     pts_world = pts * resolution + min_corner  # map voxel indices to mesh coords
 
     # --- Determine inside voxels ---
-    inside = mesh.contains(pts_world).reshape(shape)
+    print(f' - Determining inside voxels ({pts_world.shape[0]} voxels)')
+    # print(pts_world.shape)
+    # inside = mesh.contains(pts_world).reshape(shape)
+    inside_flat = np.zeros(len(pts_world), dtype=bool)
+
+    batch_size = 30_000  # tune to your RAM
+    n_pts = len(pts_world)
+
+    for i in range(0, n_pts, batch_size):
+        j = min(i + batch_size, n_pts)
+        inside_flat[i:j] = mesh.contains(pts_world[i:j])
+        print(f"    * Processed {j}/{n_pts}")
+
+    inside = inside_flat.reshape(shape)
 
     # --- Initialize volume ---
+    print(' - Initializing volume ')
     volume = np.zeros(shape, dtype=int) + env_id
     volume[inside] = 0  # mark usable domain
 
@@ -167,6 +182,7 @@ def initialize_volume_clusters_from_stl(
     current_id = 1
 
     # --- Generate clusters (only inside mesh) ---
+    print(' - Generating clusters inside mesh')
     X, Y, Z = np.indices(shape)
     domain_mask = volume == 0
 
@@ -186,6 +202,7 @@ def initialize_volume_clusters_from_stl(
 
     # --- Add noise (only inside mesh) ---
     if noise_density is not None and noise_density > 0:
+        print(' - Adding noise')
         noise_mask = (rng.random(shape) < noise_density) & domain_mask & (volume == 0)
         noise_indices = np.argwhere(noise_mask)
         for idx in noise_indices:
