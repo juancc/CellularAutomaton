@@ -115,7 +115,8 @@ def initialize_volume_clusters_from_stl(
     density=0.5,
     noise_density=0.02, 
     env_id=-1,              
-    seed=None
+    seed=None,
+    batch_size = 30_000 
 ):
     """
     Initialize a 3D volume from an STL mesh:
@@ -132,6 +133,8 @@ def initialize_volume_clusters_from_stl(
         noise_density (float): probability of random noise voxels
         env_id (int): label for environment voxels (surface)
         seed (int or None): RNG seed
+        batch_size (int): How many voxels are passed at the same time 
+            to determine if is inside/outside the mesh boundary. This have a big impact on RAM
 
     Returns:
         volume (3D np.array), color_map (dict)
@@ -163,7 +166,7 @@ def initialize_volume_clusters_from_stl(
     # inside = mesh.contains(pts_world).reshape(shape)
     inside_flat = np.zeros(len(pts_world), dtype=bool)
 
-    batch_size = 30_000  # tune to your RAM
+     # tune to your RAM
     n_pts = len(pts_world)
 
     for i in range(0, n_pts, batch_size):
